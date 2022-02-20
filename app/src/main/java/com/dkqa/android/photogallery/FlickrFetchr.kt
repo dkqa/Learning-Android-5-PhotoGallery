@@ -6,10 +6,9 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.dkqa.android.photogallery.api.FlickrApi
-import com.dkqa.android.photogallery.api.FlickrResponse
-import com.dkqa.android.photogallery.api.GalleryItem
-import com.dkqa.android.photogallery.api.PhotoResponse
+import com.dkqa.android.photogallery.api.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,17 +24,29 @@ class FlickrFetchr {
     private val flickrApi: FlickrApi
 
     init {
+        val client = OkHttpClient.Builder()
+            .addInterceptor(PhotoInterceptor())
+            .build()
+
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl("https://api.flickr.com/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
             .build()
 
         flickrApi = retrofit.create(FlickrApi::class.java)
     }
 
     fun fetchPhotos(): LiveData<List<GalleryItem>> {
+        return fetchPhotoMetadata(flickrApi.fetchPhotos())
+    }
+
+    fun searchPhotos(query: String): LiveData<List<GalleryItem>> {
+        return fetchPhotoMetadata(flickrApi.searchPhotos(query))
+    }
+
+    private fun fetchPhotoMetadata(flickrRequest: Call<FlickrResponse>): LiveData<List<GalleryItem>> {
         val responseLiveData: MutableLiveData<List<GalleryItem>> = MutableLiveData()
-        val flickrRequest: Call<FlickrResponse> = flickrApi.fetchPhotos()
 
         flickrRequest.enqueue(object : Callback<FlickrResponse> {
             override fun onResponse(call: Call<FlickrResponse>, response: Response<FlickrResponse>) {
