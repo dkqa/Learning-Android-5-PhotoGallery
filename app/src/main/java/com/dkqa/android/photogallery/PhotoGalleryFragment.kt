@@ -100,6 +100,10 @@ class PhotoGalleryFragment : Fragment() {
                 }
 
             })
+
+            setOnClickListener {
+                searchView.setQuery(photoGalleryViewModel.searchTerm, false)
+            }
         }
     }
 
