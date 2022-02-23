@@ -59,14 +59,14 @@ class PollWorker(val context: Context, workerParams: WorkerParameters) : Worker(
             val notificationManager = NotificationManagerCompat.from(context)
             notificationManager.notify(0, notification)
 
-            context.sendBroadcast(Intent(ACTIOON_SHOW_NOTIFICATION))
+            context.sendBroadcast(Intent(ACTION_SHOW_NOTIFICATION))
         }
 
         return Result.success()
     }
 
     companion object {
-        const val ACTIOON_SHOW_NOTIFICATION = "com.dkqa.android.photogallery.SHOW_NOTIFICATION"
+        const val ACTION_SHOW_NOTIFICATION = "com.dkqa.android.photogallery.SHOW_NOTIFICATION"
     }
 
 }
