@@ -59,7 +59,7 @@ class PollWorker(val context: Context, workerParams: WorkerParameters) : Worker(
             val notificationManager = NotificationManagerCompat.from(context)
             notificationManager.notify(0, notification)
 
-            context.sendBroadcast(Intent(ACTION_SHOW_NOTIFICATION))
+            context.sendBroadcast(Intent(ACTION_SHOW_NOTIFICATION), PERM_PRIVATE)
         }
 
         return Result.success()
@@ -67,6 +67,7 @@ class PollWorker(val context: Context, workerParams: WorkerParameters) : Worker(
 
     companion object {
         const val ACTION_SHOW_NOTIFICATION = "com.dkqa.android.photogallery.SHOW_NOTIFICATION"
+        const val PERM_PRIVATE = "com.dkqa.android.photogallery.PRIVATE"
     }
 
 }
